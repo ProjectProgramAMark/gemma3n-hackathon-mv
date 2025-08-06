@@ -1,0 +1,107 @@
+diff --git a/node_modules/react-native-drag-sort-gridview/src/DraggableGridView.tsx b/node_modules/react-native-drag-sort-gridview/src/DraggableGridView.tsx
+index 043b2c2..61c295c 100644
+--- a/node_modules/react-native-drag-sort-gridview/src/DraggableGridView.tsx
++++ b/node_modules/react-native-drag-sort-gridview/src/DraggableGridView.tsx
+@@ -1,4 +1,4 @@
+-import React from 'react'
++import React, { forwardRef, useImperativeHandle } from 'react';
+ import {
+   LayoutChangeEvent,
+   NativeScrollEvent,
+@@ -7,35 +7,12 @@ import {
+   ScrollViewProps,
+   View,
+   ViewStyle
+-} from 'react-native'
+-import DraggableItem from './components/DraggableItem'
+-import styles from './styles'
+-import useDraggableGridViewHooks from './useDraggableGridViewHooks'
++} from 'react-native';
++import DraggableItem from './components/DraggableItem';
++import styles from './styles';
++import useDraggableGridViewHooks from './useDraggableGridViewHooks';
+ 
+-const DraggableGridView = <T,>(
+-  props: ScrollViewProps & {
+-    data: Array<T>
+-    listWidth?: number
+-    itemHeight?: number
+-    isEditing: boolean
+-    isRTL?: boolean
+-    shouldVibrate?: boolean
+-    shouldAnimOnRelease?: boolean
+-    itemContainerStyle?: ViewStyle
+-    animMoveDuration?: number
+-    numColumns: number
+-    debounce?: number | undefined
+-    scrollThreshold?: number | undefined
+-    renderItem: ({ item, index }: { item: T; index: number }) => React.ReactElement | null
+-    renderOnEditOverlay?: ({ index }: { index: number }) => React.ReactElement | null
+-    keyExtractor: (item: T, index: number) => string
+-    onOrderChanged: (orderedData: Array<T>, from: number, to: number) => void
+-    onMovingStateChanged?: (isMoving: boolean) => void
+-    onLayout?: (event: LayoutChangeEvent) => void
+-    onContentSizeChange?: (w: number, h: number) => void
+-    onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void
+-  }
+-) => {
++const DraggableGridView = forwardRef((props, ref) => {
+   const {
+     style,
+     contentContainerStyle,
+@@ -59,7 +36,7 @@ const DraggableGridView = <T,>(
+     onLayout: propsOnLayout,
+     onContentSizeChange: propsOnContentSizeChange,
+     onScroll: propsOnScroll
+-  } = props
++  } = props;
+ 
+   const {
+     isLock,
+@@ -95,9 +72,18 @@ const DraggableGridView = <T,>(
+     propsOnLayout,
+     propsOnContentSizeChange,
+     propsOnScroll
+-  })
++  });
+ 
+-  const renderItem = ({ item, index }: { item: T; index: number }) => (
++  useImperativeHandle(ref, () => ({
++    scrollTo: ({ x, y, animated }) => {
++      if (listRef.current) {
++        listRef.current.scrollTo({ x, y, animated });
++      }
++    },
++    getScrollableNode: () => listRef.current
++  }));
++
++  const renderItem = ({ item, index }) => (
+     <DraggableItem
+       key={keyExtractor(item, index)}
+       style={itemContainerStyle}
+@@ -128,7 +114,7 @@ const DraggableGridView = <T,>(
+       onEndDrag={onEndDrag}>
+       <>{propsRenderItem({ item, index })}</>
+     </DraggableItem>
+-  )
++  );
+ 
+   return (
+     <>
+@@ -142,11 +128,11 @@ const DraggableGridView = <T,>(
+         style={[styles.list, style, { width: listWidth }]}
+         contentContainerStyle={[contentContainerStyle, styles.content]}
+         scrollEnabled={isEnableScroll}>
+-        {data.map((item: T, index: number) => renderItem({ item, index }))}
++        {data.map((item, index) => renderItem({ item, index }))}
+       </ScrollView>
+       {isLock === true && <View style={styles.uiBlock} />}
+     </>
+-  )
+-}
++  );
++});
+ 
+-export default DraggableGridView
++export default DraggableGridView;
+\ No newline at end of file

@@ -1,0 +1,42 @@
+{
+  "cli": {
+    "version": ">= 5.9.1",
+    "promptToConfigurePushNotifications": false
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "development"
+      }
+    },
+    "preview": {
+      "developmentClient": false,
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "preview",
+        "EXPO_PUBLIC_API_URL": "https://api.mosaicvoiceaac.com",
+        "EXPO_PUBLIC_AUTH0_DOMAIN": "mosaic-voice.us.auth0.com",
+        "EXPO_PUBLIC_AUTH0_CLIENT_ID": "LN2peKfFI4YXLCqC5z7wxun1IjUNnG9h",
+        "EXPO_PUBLIC_AUTH0_AUDIENCE": "https://mosaic-voice.us.auth0.com/api/v2/",
+        "EXPO_PUBLIC_AUTH0_AUTHORIZATION_ENDPOINT": "https://mosaic-voice.us.auth0.com/authorize",
+        "EXPO_PUBLIC_AUTH0_TOKEN_ENDPOINT": "https://mosaic-voice.us.auth0.com/oauth/token",
+        "EXPO_PUBLIC_AUTH0_LOGOUT_ENDPOINT": "https://mosaic-voice.us.auth0.com/v2/logout",
+        "EXPO_PUBLIC_AUTH0_CALLBACK_URL_IOS": "com.mosaic-voice.mobile-app.auth0://mosaic-voice.us.auth0.com/ios/com.mosaic-voice.mobile-app.auth0/callback",
+        "EXPO_PUBLIC_AUTH0_CALLBACK_URL_ANDROID": "com.projectprogramamark.mosaic-voice.auth0://mosaic-voice.us.auth0.com/android/com.projectprogramamark.mosaic_voice/callback",
+        "EXPO_PUBLIC_AUTH0_REDIRECT_SCHEME": "mosaicvoicescheme"
+      }
+    },
+    "production": {
+      "distribution": "store",
+      "developmentClient": false,
+      "env": {
+        "APP_VARIANT": "production"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

@@ -1,0 +1,77 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+
+*.ipa
+*.apk
+
+# ------- sensitive / per-developer settings (added) -------
+ios/.xcode.env
+**/sentry.properties
+
+# -------------- Native build artifacts & caches (ADDED) --------------
+# iOS
+ios/build/
+ios/DerivedData/
+ios/Pods/
+ios/.symlinks/
+ios/*.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
+ios/*/*.xcuserdata/
+ios/*.xcworkspace/
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+.gradle/
+
+# secrets / signing keys
+android/keystores/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.keystore
+# ---------------------------------------------------------------------
+
+# Native
+*.orig.*
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# Environment files
+.env
+.env.development
+.env.production
+.env.*
+
+# typescript
+*.tsbuildinfo
+
+# model files
+*.task
+
+# custom ones for our project
+assets/models/
+builds/
+# card images - comment temporarily to build app using eas
+assets/card_images/mulberrySymbols
