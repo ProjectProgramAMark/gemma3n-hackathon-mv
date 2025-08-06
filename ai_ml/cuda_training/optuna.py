@@ -1,3 +1,13 @@
+"""
+This script performs hyperparameter optimization for fine-tuning a language model using Optuna.
+
+It defines an objective function that trains and evaluates a model with a given set of hyperparameters
+and uses an Optuna study to find the best combination of hyperparameters.
+The results are logged using MLflow.
+
+Usage:
+    python optuna.py --model-id <model_id> --dataset-path <path_to_dataset> [options]
+"""
 from transformers import DataCollatorForLanguageModeling
 from trl import SFTConfig, SFTTrainer
 from fine_tuning import model_init, set_lora_config, set_training_args, load_tokenizer, format_dataset, compute_metrics, plot_metrics
@@ -9,6 +19,22 @@ from datasets import load_dataset, DatasetDict
 
 # Objective function for Optuna
 def objective(trial, model_id, formatted_dataset, tokenizer, prompt_format):
+    """
+    the objective function for the optuna study.
+
+    this function defines the hyperparameters to be tuned, initializes and trains a model
+    with these hyperparameters, and returns the evaluation result.
+
+    args:
+        trial (optuna.trial.trial): an optuna trial object.
+        model_id (str): the model id from hugging face.
+        formatted_dataset (datasetdict): the formatted dataset for training and evaluation.
+        tokenizer (autotokenizer): the tokenizer for the model.
+        prompt_format (str): the prompt format to use.
+
+    returns:
+        dict: the evaluation result from the trainer.
+    """
 
     # Set up hyperparameters
     lora_r = trial.suggest_int("lora_r", 8, 16, step=8)
@@ -62,6 +88,15 @@ def objective(trial, model_id, formatted_dataset, tokenizer, prompt_format):
 
 
 def main(args):
+    """
+    the main function for the script.
+
+    it parses command-line arguments, loads and preprocesses the dataset,
+    and runs the optuna study.
+
+    args:
+        args (argparse.namespace): the command-line arguments.
+    """
     # mlflow.transformers.autolog()
     model_id = args.model_id
 

@@ -1,8 +1,24 @@
+"""
+This script provides functions for formatting datasets for training a language model.
+
+It supports different prompt formats and training types (sft and kto).
+It also includes functions for loading tokenizers and performing sanity checks on the formatted dataset.
+"""
 from transformers import AutoTokenizer
 from unsloth import FastLanguageModel
 
 
 def formatting_func(sample, prompt_format="mistral"):
+    """
+    formats a sample for supervised fine-tuning (sft).
+
+    args:
+        sample (dict): a dictionary containing 'input' and 'output' keys.
+        prompt_format (str, optional): the prompt format to use. defaults to "mistral".
+
+    returns:
+        dict: a dictionary with a "text" key containing the formatted prompt.
+    """
     input = sample['input']
     output = sample['output']
     if prompt_format == "mistral":
@@ -16,6 +32,17 @@ def formatting_func(sample, prompt_format="mistral"):
     return {"text": prompt}
 
 def formatting_func_chat(sample, tokenizer, prompt_format):
+    """
+    formats a sample for chat-based supervised fine-tuning (sft).
+
+    args:
+        sample (dict): a dictionary containing 'input' and 'output' keys.
+        tokenizer (autotokenizer): the tokenizer for the model.
+        prompt_format (str): the prompt format to use.
+
+    returns:
+        dict: a dictionary with a "text" key containing the formatted chat prompt.
+    """
     input_str = ''.join(sample['input'])
     output_str = ''.join(sample['output'])
     
@@ -48,6 +75,17 @@ def formatting_func_chat(sample, tokenizer, prompt_format):
     return {"text": tokenized_input}
 
 def formatting_func_kto(sample, tokenizer, prompt_format):
+    """
+    formats a sample for kernel-based task optimization (kto).
+
+    args:
+        sample (dict): a dictionary containing 'prompt', 'completion', and 'label' keys.
+        tokenizer (autotokenizer): the tokenizer for the model.
+        prompt_format (str): the prompt format to use.
+
+    returns:
+        dict: the formatted sample with tokenized prompt and completion.
+    """
     if prompt_format == "mistral":
         sample["prompt"] = f"""[INST] Assist a non-verbal autistic individual in communicating their thoughts or needs through selected images.
         Your task is to infer and articulate the message in first-person, using simple, direct language with empathy and clarity.
@@ -78,6 +116,15 @@ def formatting_func_kto(sample, tokenizer, prompt_format):
     return sample
 
 def sanity_check(dataset, tokenizer, training_type="SFT", num_samples=3):
+    """
+    performs a sanity check on the formatted dataset by printing a few samples.
+
+    args:
+        dataset (dataset): the formatted dataset.
+        tokenizer (autotokenizer): the tokenizer for the model.
+        training_type (str, optional): the training type ('sft' or 'kto'). defaults to "sft".
+        num_samples (int, optional): the number of samples to print. defaults to 3.
+    """
     # Sanity check on text dataset with prompts
     for i in range(num_samples):  # Adjust the range to inspect more examples
         print(f"Example {i}:")
@@ -113,6 +160,19 @@ def sanity_check(dataset, tokenizer, training_type="SFT", num_samples=3):
 
 
 def load_tokenizer(model_id, prompt_format="mistral", training_type="SFT", anton=False, unsloth=False):
+    """
+    loads the tokenizer for the model.
+
+    args:
+        model_id (str): the model id from hugging face.
+        prompt_format (str, optional): the prompt format to use. defaults to "mistral".
+        training_type (str, optional): the training type ('sft' or 'kto'). defaults to "sft".
+        anton (bool, optional): whether to use the anton format. defaults to false.
+        unsloth (bool, optional): whether to use unsloth. defaults to false.
+
+    returns:
+        autotokenizer: the loaded tokenizer.
+    """
     if not unsloth:
         tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=False, add_bos_token=True)
     else:
@@ -168,6 +228,21 @@ def load_tokenizer(model_id, prompt_format="mistral", training_type="SFT", anton
     return tokenizer
 
 def format_dataset(model_id, tokenizer, dataset, prompt_format="mistral", training_type="SFT", anton=False, unsloth=False):
+    """
+    formats the entire dataset for training.
+
+    args:
+        model_id (str): the model id from hugging face.
+        tokenizer (autotokenizer): the tokenizer for the model.
+        dataset (dataset): the dataset to format.
+        prompt_format (str, optional): the prompt format to use. defaults to "mistral".
+        training_type (str, optional): the training type ('sft' or 'kto'). defaults to "sft".
+        anton (bool, optional): whether to use the anton format. defaults to false.
+        unsloth (bool, optional): whether to use unsloth. defaults to false.
+
+    returns:
+        dataset: the formatted dataset.
+    """
 
     # tokenizer = load_tokenizer(model_id, prompt_format=prompt_format, training_type=training_type, anton=anton, unsloth=False)
 

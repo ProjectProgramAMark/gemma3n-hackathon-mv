@@ -1,3 +1,10 @@
+/**
+ * @file app.css
+ * @description this file contains the main styles for the application,
+ * including styles for the root element, logos, cards, privacy policy, and leaderboard.
+ */
+
+/* root and logo styles */
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -41,7 +48,7 @@
   color: #888;
 }
 
-/* Privacy policy css */
+/* privacy policy styles */
 .privacy-policy-container {
   font-family: Arial, sans-serif;
   margin: 20px auto;
@@ -87,6 +94,7 @@
   background-color: #0056b3;
 }
 
+/* leaderboard container styles */
 .leaderboard-container {
   background-color: var(--bg-color);
   border-radius: 8px;
@@ -157,6 +165,7 @@
   font-weight: bold;
 }
 
+/* leaderboard button styles */
 .leaderboard-button {
   position: fixed;
   top: 20px;

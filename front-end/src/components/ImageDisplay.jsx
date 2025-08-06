@@ -1,16 +1,26 @@
+/**
+ * @file imagedisplay.jsx
+ * @description this component displays a random set of cards, allows the user to submit a sentence
+ * describing them, and handles the interaction with the backend to save the data and update scores.
+ */
 import React, { useState, useEffect } from 'react';
 import '../App.css';
 import cards from '../assets/data/mulberry_cards';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getUserInfo, setUserInfo, updateLeaderboard } from '../utils/leaderboardUtils';
+import { getUserInfo, setUserInfo, incrementScore } from '../utils/leaderboardUtils';
 
 function ImageDisplay() {
+  // state for the currently displayed cards
   const [images, setImages] = useState([]);
+  // state for the user's input text
   const [inputText, setInputText] = useState('');
+  // state to manage the loading spinner
   const [isLoading, setIsLoading] = useState(false);
+  // state for the user's score
   const [userScore, setUserScore] = useState(0);
 
+  // fetch initial cards when the component mounts
   useEffect(() => {
     refreshCards();
   }, []);
@@ -23,7 +33,10 @@ function ImageDisplay() {
     setUserScore(parseInt(savedScore));
   }, []);
 
-  // Function to get a new set of cards
+  /**
+   * @description fetches a new random set of cards to display.
+   * it also cleans the card titles for display.
+   */
   const refreshCards = () => {
     const randomCount = Math.floor(Math.random() * 3) + 2; // random number between 2 and 4
     const shuffled = cards.sort(() => 0.5 - Math.random()); // shuffle the array
@@ -37,17 +50,30 @@ function ImageDisplay() {
     setImages(modifiedCards);
   };
 
-  // Function to remove a card
+  /**
+   * @description removes a card from the display when the user clicks the 'x' button.
+   * @param {number} index - the index of the card to remove.
+   */
   const removeCard = (index) => {
     setImages(images.filter((_, i) => i !== index));
   };
 
+  /**
+   * @description handles the form submission, prevents default form behavior,
+   * sends the sentence, and refreshes the cards.
+   * @param {object} e - the event object.
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     sendSentence(inputText);
     refreshCards();
   };
 
+  /**
+   * @description sends the user's sentence and the associated card data to the backend.
+   * it also handles updating the user's score and displaying toast notifications.
+   * @param {string} text - the sentence submitted by the user.
+   */
   const sendSentence = async (text) => {
     setIsLoading(true);
     try {
@@ -86,6 +112,11 @@ function ImageDisplay() {
     }
   }
 
+  /**
+   * @description displays a toast notification to the user.
+   * @param {string} toastmessage - the message to display.
+   * @param {boolean} issuccess - determines if the toast is a success or error message.
+   */
   const showToast = (toastMessage, isSuccess) => {
     let options = {
       position: "bottom-right",

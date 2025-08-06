@@ -14,8 +14,9 @@ class LlmInferenceModule: NSObject {
     override init() {
         super.init()
         // Update the model name and type if needed
-        if let modelPath = Bundle.main.path(forResource: "gemma3-1b-it-int4", ofType: "task") {
+        // if let modelPath = Bundle.main.path(forResource: "gemma3-1b-it-int4", ofType: "task") {
         // if let modelPath = Bundle.main.path(forResource: "gemma-3n-E2B-it-int4", ofType: "task") {
+        if let modelPath = Bundle.main.path(forResource: "gemma-3n-E4B-it-int4", ofType: "task") {
             let options = LlmInference.Options(modelPath: modelPath)
             options.maxTokens = 1000
             options.maxTopk = 40

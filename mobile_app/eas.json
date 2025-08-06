@@ -3,6 +3,13 @@
     "version": ">= 5.9.1",
     "promptToConfigurePushNotifications": false
   },
+  "hooks": {
+    "build": {
+      "ios": {
+        "pre-install": "rm -rf ios/Pods && rm -rf ios/Podfile.lock && pod cache clean --all && pod install --repo-update"
+      }
+    }
+  },
   "build": {
     "development": {
       "developmentClient": true,
@@ -32,7 +39,9 @@
       "distribution": "store",
       "developmentClient": false,
       "env": {
-        "APP_VARIANT": "production"
+        "APP_VARIANT": "production",
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true",
+        "SENTRY_ALLOW_FAILURE": "true"
       }
     }
   },

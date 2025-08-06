@@ -1,3 +1,14 @@
+"""
+This script fine-tunes a language model using either Supervised Fine-Tuning (SFT) or Kernel-based Task Optimization (KTO).
+
+It supports:
+- qlora and unsloth for memory-efficient training.
+- different prompt formats.
+- logging experiments with mlflow.
+
+Usage:
+    python fine_tuning.py --model-id <model_id> --dataset-path <path_to_dataset> [options]
+"""
 from transformers import AutoModelForCausalLM, BitsAndBytesConfig, TrainingArguments, DataCollatorForLanguageModeling
 # unsloth version
 # from transformers import AutoTokenizer, BitsAndBytesConfig, TrainingArguments, Trainer, DataCollatorForLanguageModeling
@@ -17,6 +28,16 @@ from plotting import plot_metrics
 from formatting import format_dataset, load_tokenizer
 
 def set_lora_config(r, lora_alpha):
+    """
+    sets the lora configuration for the model.
+
+    args:
+        r (int): the r value for qlora.
+        lora_alpha (int): the alpha value for qlora.
+
+    returns:
+        loraconfig: the lora configuration.
+    """
     lora_config = LoraConfig(
         r=r,
         lora_alpha=lora_alpha,
@@ -33,6 +54,19 @@ def set_lora_config(r, lora_alpha):
     return lora_config
 
 def model_init(model_id, tokenizer, r, lora_alpha, unsloth=False):
+    """
+    initializes the model for training.
+
+    args:
+        model_id (str): the model id from hugging face.
+        tokenizer (autotokenizer): the tokenizer for the model.
+        r (int): the r value for qlora.
+        lora_alpha (int): the alpha value for qlora.
+        unsloth (bool, optional): whether to use unsloth or not. defaults to false.
+
+    returns:
+        automodelforcausallm: the initialized model.
+    """
     if not unsloth:
         # transformers
         bnb_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_quant_type="nf4")
@@ -80,6 +114,15 @@ def model_init(model_id, tokenizer, r, lora_alpha, unsloth=False):
     return model
 
 def compute_metrics(eval_pred):
+    """
+    computes metrics for evaluation.
+
+    args:
+        eval_pred (tuple): a tuple containing logits and labels.
+
+    returns:
+        dict: a dictionary containing the evaluation loss, f1 score, and accuracy.
+    """
     logits, labels = eval_pred
     predictions = np.argmax(logits, axis=-1)
     eval_f1 = f1_score(labels, predictions, average='weighted')
@@ -95,6 +138,15 @@ def compute_metrics(eval_pred):
     }
 
 def set_training_args(args):
+    """
+    sets the training arguments for the trainer.
+
+    args:
+        args (argparse.namespace): the command line arguments.
+
+    returns:
+        sftconfig or ktoconfig: the training arguments.
+    """
     if args.training_type == "SFT":
         training_args = SFTConfig(
             dataset_text_field='text',
@@ -144,6 +196,12 @@ def set_training_args(args):
     return training_args
 
 def main(args):
+    """
+    the main function for the script.
+
+    args:
+        args (argparse.namespace): the command line arguments.
+    """
     mlflow.transformers.autolog()
     model_id = args.model_id
 

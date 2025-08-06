@@ -1,42 +1,56 @@
+/**
+ * @file leaderboard.jsx
+ * @description this component displays the leaderboard, fetches data from the api,
+ * and allows users to submit their score.
+ * @note this component contains hardcoded authentication credentials, which is a security risk.
+ * in a production environment, these should be handled securely, for example, using environment variables.
+ */
 import React, { useState, useEffect } from 'react';
 import '../styles/Leaderboard.css';
 
 const API_BASE_URL = import.meta.env.VITE_NGROK_URL;
+// warning: hardcoded credentials are a security risk.
 const AUTH_HEADER = 'Basic ' + btoa('user:password123');
-console.log('Leaderboard Component Initialized');
-console.log('API Base URL:', API_BASE_URL);
-console.log('Auth Header:', AUTH_HEADER);
 
+/**
+ * @description a component that displays the leaderboard, fetches data from the api,
+ * and allows users to submit their score.
+ * @param {object} props - the component props.
+ * @param {number} props.score - the user's current score.
+ * @param {function} props.onclose - function to close the leaderboard.
+ * @param {boolean} props.isvisible - whether the leaderboard is visible.
+ */
 const Leaderboard = ({ score, onClose, isVisible }) => {
+  // state for the player's name input
   const [playerName, setPlayerName] = useState('');
+  // state for the leaderboard data
   const [leaderboardData, setLeaderboardData] = useState([]);
+  // state to track if the score has been submitted
   const [submitted, setSubmitted] = useState(false);
+  // state for loading indicator
   const [loading, setLoading] = useState(true);
+  // state for error messages
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log('Leaderboard mounted, isVisible:', isVisible);
     if (isVisible) {
       fetchLeaderboard();
-      // Fetch leaderboard every 30 seconds
+      // fetch leaderboard every 30 seconds
       const interval = setInterval(fetchLeaderboard, 30000);
       return () => clearInterval(interval);
     }
   }, [isVisible]);
 
+  /**
+   * @description fetches the leaderboard data from the api.
+   */
   const fetchLeaderboard = async () => {
     setLoading(true);
     setError(null);
     const url = `${API_BASE_URL}/leaderboard`;
-    console.log('Fetching leaderboard...');
-    console.log('Full URL:', url);
 
     try {
       const cleanUrl = url.replace(/([^:]\/)\/+/g, "$1");
-      console.log('Clean URL:', cleanUrl);
-      console.log('Making fetch request with headers:', {
-        'Authorization': AUTH_HEADER
-      });
       
       const response = await fetch(cleanUrl, {
         method: 'GET',
@@ -45,33 +59,30 @@ const Leaderboard = ({ score, onClose, isVisible }) => {
           'Accept': 'application/json'
         }
       });
-      console.log('Response status:', response.status);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
       
       const responseText = await response.text();
-      console.log('Raw response:', responseText);
       
       if (!response.ok) {
-        console.log('Error response text:', responseText);
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`http error! status: ${response.status}`);
       }
       
       const data = JSON.parse(responseText);
-      console.log('Leaderboard data:', data);
       setLeaderboardData(data.leaderboard || []);
     } catch (error) {
-      console.error('Error fetching leaderboard:', error);
-      setError(`Failed to load leaderboard: ${error.message}`);
+      console.error('error fetching leaderboard:', error);
+      setError(`failed to load leaderboard: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
+  /**
+   * @description submits the player's score to the api.
+   */
   const handleSubmit = async () => {
     if (!playerName.trim()) return;
 
     const url = `${API_BASE_URL}/score/${encodeURIComponent(playerName)}`;
-    console.log('Submitting score to:', url);
 
     try {
       const response = await fetch(url, {
@@ -81,19 +92,15 @@ const Leaderboard = ({ score, onClose, isVisible }) => {
         }
       });
       
-      console.log('Submit response status:', response.status);
-      
       if (!response.ok) {
-        const text = await response.text();
-        console.log('Error response text:', text);
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`http error! status: ${response.status}`);
       }
       
       setSubmitted(true);
       fetchLeaderboard();
     } catch (error) {
-      console.error('Error submitting score:', error);
-      setError(`Failed to submit score: ${error.message}`);
+      console.error('error submitting score:', error);
+      setError(`failed to submit score: ${error.message}`);
     }
   };
 
@@ -105,6 +112,7 @@ const Leaderboard = ({ score, onClose, isVisible }) => {
           <button className="minimize-button" onClick={onClose}>×</button>
         </div>
         
+        {/* score submission form */}
         {!submitted && score > 0 && (
           <div className="submit-score">
             <input
@@ -118,6 +126,7 @@ const Leaderboard = ({ score, onClose, isVisible }) => {
           </div>
         )}
 
+        {/* leaderboard list */}
         <div className="leaderboard-list">
           {loading ? (
             <div className="leaderboard-message">Loading...</div>

@@ -1,3 +1,12 @@
+"""
+This script trains a language model using Kernel-based Task Optimization (KTO).
+
+It loads a pretrained model, a dataset, and a tokenizer, then uses the TRL KTOTrainer
+to perform the training.
+
+Usage:
+    python kto.py --model_name_or_path <model_name> --dataset_name <dataset_name> [kto_args]
+"""
 from dataclasses import dataclass
 
 from datasets import load_dataset
@@ -44,6 +53,15 @@ if __name__ == "__main__":
 
     # Apply chat template
     def format_dataset(example):
+        """
+        applies the chat template to the prompt and completion for kto.
+
+        args:
+            example (dict): a dictionary containing 'prompt' and 'completion' keys.
+
+        returns:
+            dict: the example with formatted prompt and completion.
+        """
         example["prompt"] = tokenizer.apply_chat_template(example["prompt"], tokenize=False)
         example["completion"] = tokenizer.apply_chat_template(example["completion"], tokenize=False)
         return example

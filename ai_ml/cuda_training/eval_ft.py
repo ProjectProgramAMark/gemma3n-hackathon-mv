@@ -1,3 +1,12 @@
+"""
+This script evaluates a fine-tuned language model.
+
+It loads a base model, merges it with a fine-tuned adapter, and generates text based on user input.
+It supports different prompt formats and model configurations.
+
+Usage:
+    python eval_ft.py --model-id <model_id> --model-path <path_to_adapter> --user-input "<prompt>"
+"""
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, pipeline
 from unsloth import FastLanguageModel
 # leaving Trainer out for now to use SFTTrainer instead
@@ -13,6 +22,16 @@ import re
 # Evaluating for ChatML formatted prompt
 
 def load_model(model_id, unsloth=False):
+    """
+    loads the base model from hugging face.
+
+    args:
+        model_id (str): the model id from hugging face.
+        unsloth (bool, optional): whether to use unsloth or not. defaults to false.
+
+    returns:
+        automodelforcausallm: the loaded base model.
+    """
     if not unsloth:
         bnb_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.float16, bnb_4bit_quant_type="nf4")
         base_model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=bnb_config, device_map='auto')
@@ -26,6 +45,17 @@ def load_model(model_id, unsloth=False):
     return base_model
 
 def merge_model(base_model, model_path, unsloth=False):
+    """
+    merges the base model with the fine-tuned adapter.
+
+    args:
+        base_model (automodelforcausallm): the base model.
+        model_path (str): the path to the fine-tuned adapter.
+        unsloth (bool, optional): whether to use unsloth or not. defaults to false.
+
+    returns:
+        peftmodel: the merged model.
+    """
     if not unsloth:
         ft_model = PeftModel.from_pretrained(base_model, model_path)
         ft_model.to("cuda")
@@ -49,6 +79,19 @@ def merge_model(base_model, model_path, unsloth=False):
     return ft_model
 
 def generate_tokenizer(model_id, base_model, anton, prompt_format, unsloth=False):
+    """
+    generates the tokenizer for the model.
+
+    args:
+        model_id (str): the model id from hugging face.
+        base_model (automodelforcausallm): the base model.
+        anton (bool): whether to use the anton format.
+        prompt_format (str): the prompt format to use.
+        unsloth (bool, optional): whether to use unsloth or not. defaults to false.
+
+    returns:
+        autotokenizer: the tokenizer for the model.
+    """
     # for anton adapters, need to resize model and token embeddings for added token special vocabularly
     if anton:
         tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=False, add_bos_token=True)
@@ -97,6 +140,17 @@ def generate_tokenizer(model_id, base_model, anton, prompt_format, unsloth=False
     return ft_tokenizer
 
 def format_prompt(user_input, chat, prompt_format):
+    """
+    formats the prompt for the model.
+
+    args:
+        user_input (str): the user input.
+        chat (bool): whether to use the chatml format.
+        prompt_format (str): the prompt format to use.
+
+    returns:
+        str: the formatted prompt.
+    """
     system_prompt = f"""
     Assist a non-verbal autistic individual in communicating their thoughts or needs through selected images.
     Your task: infer and articulate the message in first-person, i.e. using I and pretending you are the user.
@@ -151,6 +205,16 @@ def format_prompt(user_input, chat, prompt_format):
     return ft_model_input
 
 def generate_output(ft_tokenizer, ft_model, ft_model_input, chat, prompt_format="mistral"):
+    """
+    generates output from the model.
+
+    args:
+        ft_tokenizer (autotokenizer): the tokenizer for the model.
+        ft_model (peftmodel): the fine-tuned model.
+        ft_model_input (str): the input for the model.
+        chat (bool): whether to use the chatml format.
+        prompt_format (str, optional): the prompt format to use. defaults to "mistral".
+    """
     if chat:
         ft_model_input_tokenized = ft_tokenizer.apply_chat_template(ft_model_input, tokenize=True, add_generation_prompt=True, return_tensors="pt").to("cuda")
     else:
@@ -194,6 +258,9 @@ def generate_output(ft_tokenizer, ft_model, ft_model_input, chat, prompt_format=
 
 # TODO: fix this up, use functions to load in to make it cleaner
 def eval_base_model():
+    """
+    evaluates the base model.
+    """
     model_type = "mistral"
 
     if model_type == "chat_ml":
@@ -246,6 +313,15 @@ def eval_base_model():
     print(base_model_output)
 
 def read_user_inputs(file_path):
+    """
+    reads user inputs from a file.
+
+    args:
+        file_path (str): the path to the file.
+
+    returns:
+        list: a list of user inputs.
+    """
     dataset = load_dataset('json', data_files=file_path)
     if 'input' in dataset['train'].column_names:
         return dataset['train']['input']

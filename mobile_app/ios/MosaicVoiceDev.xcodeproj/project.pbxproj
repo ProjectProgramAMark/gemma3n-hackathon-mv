@@ -12,7 +12,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		16D2195F2E235F2000FD4DCA /* gemma3-1b-it-int4.task in Resources */ = {isa = PBXBuildFile; fileRef = 16D2195E2E235F2000FD4DCA /* gemma3-1b-it-int4.task */; };
+		16606BC92E43DC0800B78768 /* gemma-3n-E4B-it-int4.task in Resources */ = {isa = PBXBuildFile; fileRef = 16606BC82E43DC0800B78768 /* gemma-3n-E4B-it-int4.task */; };
 		16D219612E235F6700FD4DCA /* LlmInferenceModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D219602E235F6700FD4DCA /* LlmInferenceModule.swift */; };
 		16D219632E236ED700FD4DCA /* LlmInferenceModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 16D219622E236ED700FD4DCA /* LlmInferenceModule.m */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
@@ -28,7 +28,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MosaicVoiceDev/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MosaicVoiceDev/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = MosaicVoiceDev/main.m; sourceTree = "<group>"; };
-		16D2195E2E235F2000FD4DCA /* gemma3-1b-it-int4.task */ = {isa = PBXFileReference; lastKnownFileType = file; path = "gemma3-1b-it-int4.task"; sourceTree = "<group>"; };
+		16606BC82E43DC0800B78768 /* gemma-3n-E4B-it-int4.task */ = {isa = PBXFileReference; lastKnownFileType = file; path = "gemma-3n-E4B-it-int4.task"; sourceTree = "<group>"; };
 		16D219602E235F6700FD4DCA /* LlmInferenceModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LlmInferenceModule.swift; sourceTree = "<group>"; };
 		16D219622E236ED700FD4DCA /* LlmInferenceModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LlmInferenceModule.m; sourceTree = "<group>"; };
 		47C3845E462343C7AF5CCCA8 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "MosaicVoiceDev/noop-file.swift"; sourceTree = "<group>"; };
@@ -91,6 +91,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				16606BC82E43DC0800B78768 /* gemma-3n-E4B-it-int4.task */,
 				16D219622E236ED700FD4DCA /* LlmInferenceModule.m */,
 				16D219602E235F6700FD4DCA /* LlmInferenceModule.swift */,
 				13B07FAE1A68108700A75B9A /* MosaicVoiceDev */,
@@ -99,7 +100,6 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
 				D7E4C46ADA2E9064B798F356 /* ExpoModulesProviders */,
-				16D2195E2E235F2000FD4DCA /* gemma3-1b-it-int4.task */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -210,7 +210,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16D2195F2E235F2000FD4DCA /* gemma3-1b-it-int4.task in Resources */,
+				16606BC92E43DC0800B78768 /* gemma-3n-E4B-it-int4.task in Resources */,
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
@@ -544,10 +544,7 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -613,10 +610,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
